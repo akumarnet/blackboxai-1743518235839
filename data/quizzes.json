@@ -1,0 +1,34 @@
+{
+  "quizzes": [
+    {
+      "subjectId": 1,
+      "questions": [
+        {
+          "question": "What does JS stand for?",
+          "options": ["Java Style", "JavaScript", "Just Script", "Jumbled Syntax"],
+          "answer": "JavaScript"
+        },
+        {
+          "question": "Which keyword declares a variable in JavaScript?",
+          "options": ["var", "let", "const", "All of the above"],
+          "answer": "All of the above"
+        }
+      ]
+    },
+    {
+      "subjectId": 2,
+      "questions": [
+        {
+          "question": "What does HTML stand for?",
+          "options": [
+            "Hyperlinks and Text Markup Language",
+            "Home Tool Markup Language",
+            "Hyper Text Markup Language",
+            "Hyper Text Making Language"
+          ],
+          "answer": "Hyper Text Markup Language"
+        }
+      ]
+    }
+  ]
+}
