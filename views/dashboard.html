@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Learning App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600">
+        <i class="fas fa-graduation-cap mr-2"></i>Learning App
+      </h1>
+      <div class="flex items-center space-x-4">
+        <span id="username-display" class="font-medium"></span>
+        <a href="/logout" class="text-blue-600 hover:text-blue-800">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-6">Choose a Subject to Learn</h2>
+    
+    <div id="subjects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Subjects will be loaded here via JavaScript -->
+    </div>
+  </main>
+
+  <script>
+    // Display username
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/dashboard')
+        .then(response => {
+          if (!response.ok) window.location.href = '/';
+        });
+      
+      // Load subjects
+      fetch('/data/subjects.json')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('subjects-container');
+          data.subjects.forEach(subject => {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow';
+            card.innerHTML = `
+              <img src="${subject.image}" alt="${subject.name}" class="w-full h-48 object-cover">
+              <div class="p-4">
+                <h3 class="text-xl font-semibold mb-2">${subject.name}</h3>
+                <p class="text-gray-600 mb-4">${subject.description}</p>
+                <a href="/study.html?subject=${subject.id}" 
+                   class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                  Start Learning
+                </a>
+              </div>
+            `;
+            container.appendChild(card);
+          });
+        });
+    });
+  </script>
+</body>
+</html>
