@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - Learning App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600">
+        <i class="fas fa-graduation-cap mr-2"></i>Learning App
+      </h1>
+      <div class="flex items-center space-x-4">
+        <span id="timer" class="font-medium bg-red-100 px-3 py-1 rounded-full">10:00</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <div id="quiz-container" class="bg-white p-6 rounded-lg shadow-md">
+      <h2 id="quiz-title" class="text-2xl font-bold mb-6"></h2>
+      <div id="questions-container">
+        <!-- Questions will be loaded here via JavaScript -->
+      </div>
+      <div class="mt-8 text-center">
+        <button id="submit-quiz" 
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+          Submit Quiz <i class="fas fa-paper-plane ml-2"></i>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let timeLeft = 600; // 10 minutes in seconds
+    let timerInterval;
+    let userAnswers = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const subjectId = urlParams.get('subject');
+      
+      if (!subjectId) window.location.href = '/dashboard';
+
+      // Start timer
+      timerInterval = setInterval(updateTimer, 1000);
+
+      // Load quiz questions
+      fetch(`/quiz/${subjectId}`)
+        .then(res => res.json())
+        .then(quiz => {
+          document.getElementById('quiz-title').textContent = `Quiz: ${quiz.subjectId === '1' ? 'JavaScript Basics' : 'HTML & CSS'}`;
+          const container = document.getElementById('questions-container');
+          
+          quiz.questions.forEach((question, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'mb-8 p-4 border-b border-gray-200';
+            questionDiv.innerHTML = `
+              <h3 class="text-lg font-semibold mb-3">${index + 1}. ${question.question}</h3>
+              <div class="space-y-2">
+                ${question.options.map((option, i) => `
+                  <label class="flex items-center space-x-3 cursor-pointer">
+                    <input type="radio" name="q${index}" value="${option}" 
+                           class="h-4 w-4 text-blue-600 focus:ring-blue-500">
+                    <span>${option}</span>
+                  </label>
+                `).join('')}
+              </div>
+            `;
+            container.appendChild(questionDiv);
+          });
+
+          // Handle form submission
+          document.getElementById('submit-quiz').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            submitQuiz(quiz.questions);
+          });
+        });
+    });
+
+    function updateTimer() {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('submit-quiz').click();
+        return;
+      }
+      
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('timer').textContent = 
+        `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    }
+
+    function submitQuiz(questions) {
+      // Collect answers
+      questions.forEach((question, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        userAnswers[index] = selected ? selected.value : null;
+      });
+
+      // Calculate score
+      let score = 0;
+      questions.forEach((question, index) => {
+        if (userAnswers[index] === question.answer) {
+          score++;
+        }
+      });
+
+      // Store results and redirect
+      localStorage.setItem('quizResults', JSON.stringify({
+        score: score,
+        total: questions.length,
+        answers: userAnswers,
+        questions: questions
+      }));
+      
+      window.location.href = '/result.html';
+    }
+  </script>
+</body>
+</html>
