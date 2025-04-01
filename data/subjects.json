@@ -1,0 +1,18 @@
+{
+  "subjects": [
+    {
+      "id": 1,
+      "name": "JavaScript Basics",
+      "description": "Learn core JavaScript concepts",
+      "content": "JavaScript is a programming language that conforms to the ECMAScript specification. It is high-level, often just-in-time compiled, and multi-paradigm. JavaScript has curly-bracket syntax, dynamic typing, prototype-based object-orientation, and first-class functions.",
+      "image": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg"
+    },
+    {
+      "id": 2,
+      "name": "HTML & CSS",
+      "description": "Web development fundamentals",
+      "content": "HTML (HyperText Markup Language) is the most basic building block of the Web. It defines the meaning and structure of web content. CSS (Cascading Style Sheets) is used to style and layout web pages — for example, to alter the font, color, size, and spacing of your content.",
+      "image": "https://images.pexels.com/photos/1591061/pexels-photo-1591061.jpeg"
+    }
+  ]
+}
