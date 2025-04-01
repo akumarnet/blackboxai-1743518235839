@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Results - Learning App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600">
+        <i class="fas fa-graduation-cap mr-2"></i>Learning App
+      </h1>
+      <a href="/dashboard" class="text-blue-600 hover:text-blue-800">
+        <i class="fas fa-home mr-1"></i> Back to Dashboard
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+      <div id="result-header" class="mb-8">
+        <h2 class="text-2xl font-bold mb-2">Quiz Results</h2>
+        <div id="score-display" class="text-4xl font-bold mb-4"></div>
+        <div id="progress-bar" class="h-4 bg-gray-200 rounded-full overflow-hidden mb-4">
+          <div id="progress-fill" class="h-full bg-green-500"></div>
+        </div>
+      </div>
+
+      <div id="questions-review" class="text-left space-y-6">
+        <!-- Questions and answers will be loaded here -->
+      </div>
+
+      <div class="mt-8">
+        <a href="/dashboard" 
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+          <i class="fas fa-redo mr-2"></i> Take Another Quiz
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const results = JSON.parse(localStorage.getItem('quizResults'));
+      if (!results) window.location.href = '/dashboard';
+
+      // Display score
+      const percentage = Math.round((results.score / results.total) * 100);
+      document.getElementById('score-display').textContent = 
+        `${results.score} / ${results.total} (${percentage}%)`;
+      
+      // Set progress bar
+      document.getElementById('progress-fill').style.width = `${percentage}%`;
+
+      // Display questions and answers
+      const container = document.getElementById('questions-review');
+      results.questions.forEach((question, index) => {
+        const isCorrect = results.answers[index] === question.answer;
+        const questionDiv = document.createElement('div');
+        questionDiv.className = `p-4 rounded-lg ${isCorrect ? 'bg-green-50' : 'bg-red-50'}`;
+        questionDiv.innerHTML = `
+          <h3 class="font-semibold mb-2">${index + 1}. ${question.question}</h3>
+          <p class="text-sm mb-1">Your answer: <span class="${isCorrect ? 'text-green-600' : 'text-red-600'} font-medium">${results.answers[index] || 'Not answered'}</span></p>
+          ${!isCorrect ? `<p class="text-sm">Correct answer: <span class="text-green-600 font-medium">${question.answer}</span></p>` : ''}
+        `;
+        container.appendChild(questionDiv);
+      });
+    });
+  </script>
+</body>
+</html>
